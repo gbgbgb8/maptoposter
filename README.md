@@ -7,6 +7,10 @@ Generate beautiful, minimalist map posters for any city in the world.
 
 ## Web App
 
+
+https://gbgbgb8.github.io/maptoposter/
+
+
 A browser-based version is available. No installation required - just serve the files with any HTTP server:
 
 ```bash
