@@ -9,7 +9,12 @@
 
 const CONFIG = {
     NOMINATIM_URL: 'https://nominatim.openstreetmap.org/search',
-    OVERPASS_URL: 'https://overpass-api.de/api/interpreter',
+    // Multiple Overpass servers for fallback (main server can be overloaded)
+    OVERPASS_SERVERS: [
+        'https://overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter',
+        'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+    ],
     CANVAS_WIDTH: 900,
     CANVAS_HEIGHT: 1200,
     USER_AGENT: 'MapToPosterWebApp/1.0'
@@ -131,7 +136,7 @@ async function geocode(city, country) {
 async function fetchOSMData(lat, lon, radiusMeters) {
     // Build Overpass query for roads, water, and parks
     const query = `
-        [out:json][timeout:60];
+        [out:json][timeout:90];
         (
             // Roads
             way["highway"~"^(motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|residential|living_street|unclassified|service)$"](around:${radiusMeters},${lat},${lon});
@@ -149,20 +154,35 @@ async function fetchOSMData(lat, lon, radiusMeters) {
         out skel qt;
     `;
     
-    const response = await fetch(CONFIG.OVERPASS_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `data=${encodeURIComponent(query)}`
-    });
-    
-    if (!response.ok) {
-        throw new Error('Failed to fetch map data');
+    // Try each Overpass server until one works
+    let lastError = null;
+    for (const serverUrl of CONFIG.OVERPASS_SERVERS) {
+        try {
+            setLoadingText(`Fetching map data...`);
+            
+            const response = await fetch(serverUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `data=${encodeURIComponent(query)}`
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return parseOSMData(data);
+        } catch (error) {
+            console.warn(`Overpass server ${serverUrl} failed:`, error.message);
+            lastError = error;
+            // Try next server
+        }
     }
     
-    const data = await response.json();
-    return parseOSMData(data);
+    // All servers failed
+    throw new Error(`Failed to fetch map data. Please try again in a moment. (${lastError?.message || 'All servers unavailable'})`);
 }
 
 function parseOSMData(data) {
