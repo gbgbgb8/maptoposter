@@ -5,6 +5,31 @@ Generate beautiful, minimalist map posters for any city in the world.
 <img src="posters/singapore_neon_cyberpunk_20260108_184503.png" width="250">
 <img src="posters/dubai_midnight_blue_20260108_174920.png" width="250">
 
+## Web App
+
+A browser-based version is available. No installation required - just serve the files with any HTTP server:
+
+```bash
+# Using Python
+python3 -m http.server 8080
+
+# Using Node.js
+npx serve
+
+# Using PHP
+php -S localhost:8080
+```
+
+Then open http://localhost:8080 in your browser.
+
+**Features:**
+- All 17 themes supported
+- Adjustable map radius (2-25 km)
+- Real-time canvas rendering
+- PNG download
+
+**Files:** `index.html`, `script.js`, `style.css`
+
 ## Examples
 
 
@@ -140,11 +165,14 @@ Create a JSON file in `themes/` directory:
 ## Project Structure
 
 ```
-map_poster/
-├── create_map_poster.py          # Main script
-├── themes/               # Theme JSON files
-├── fonts/                # Roboto font files
-├── posters/              # Generated posters
+maptoposter/
+├── index.html                    # Web app HTML
+├── script.js                     # Web app JavaScript
+├── style.css                     # Web app styles
+├── create_map_poster.py          # Python CLI script
+├── themes/                       # Theme JSON files (shared by both versions)
+├── fonts/                        # Roboto font files (Python version)
+├── posters/                      # Generated posters
 └── README.md
 ```
 

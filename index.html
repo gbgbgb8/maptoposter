@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map to Poster</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="controls">
+            <h1>Map to Poster</h1>
+            <p class="subtitle">Generate beautiful, minimalist map posters for any city</p>
+            
+            <form id="poster-form">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" placeholder="e.g. Tokyo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" placeholder="e.g. Japan" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="theme">Theme</label>
+                    <select id="theme" name="theme">
+                        <option value="autumn">Autumn</option>
+                        <option value="blueprint">Blueprint</option>
+                        <option value="contrast_zones">Contrast Zones</option>
+                        <option value="copper_patina">Copper Patina</option>
+                        <option value="feature_based" selected>Feature Based</option>
+                        <option value="forest">Forest</option>
+                        <option value="gradient_roads">Gradient Roads</option>
+                        <option value="japanese_ink">Japanese Ink</option>
+                        <option value="midnight_blue">Midnight Blue</option>
+                        <option value="monochrome_blue">Monochrome Blue</option>
+                        <option value="neon_cyberpunk">Neon Cyberpunk</option>
+                        <option value="noir">Noir</option>
+                        <option value="ocean">Ocean</option>
+                        <option value="pastel_dream">Pastel Dream</option>
+                        <option value="sunset">Sunset</option>
+                        <option value="terracotta">Terracotta</option>
+                        <option value="warm_beige">Warm Beige</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="distance">
+                        Map Radius: <span id="distance-value">10</span> km
+                    </label>
+                    <input type="range" id="distance" name="distance" min="2" max="25" value="10" step="1">
+                    <div class="distance-hints">
+                        <span>Dense</span>
+                        <span>Wide</span>
+                    </div>
+                </div>
+                
+                <button type="submit" id="generate-btn" class="btn-primary">
+                    Generate Poster
+                </button>
+            </form>
+            
+            <div id="status" class="status"></div>
+            
+            <button id="download-btn" class="btn-secondary" disabled>
+                Download PNG
+            </button>
+            
+            <footer class="attribution">
+                <p>Data © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</p>
+            </footer>
+        </aside>
+        
+        <main class="canvas-container">
+            <div class="canvas-wrapper">
+                <canvas id="poster-canvas" width="900" height="1200"></canvas>
+                <div id="loading-overlay" class="loading-overlay hidden">
+                    <div class="spinner"></div>
+                    <p id="loading-text">Loading...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
